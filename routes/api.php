@@ -18,7 +18,7 @@ use App\Http\Controllers\Api\KategoriController;
 */
 
 
-Route::group(['middleware' => ['jwt.verify']], function () {
+Route::group(['middleware' => ['jwt.verify', 'role:admin']], function () {
     Route::resource('barang', BarangController::class);
     Route::resource('kategori', KategoriController::class);
 });

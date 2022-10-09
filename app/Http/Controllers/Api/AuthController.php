@@ -21,7 +21,9 @@ class AuthController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'required',
             'email' => 'required|email|unique:users',
-            'password' => 'required'
+            'role' => 'required',
+            'password' => 'required|required_with:confirm_password|same:confirm_password',
+            'confirm_password' => 'required'
         ]);
 
         if ($validator->fails()) {
@@ -34,6 +36,7 @@ class AuthController extends Controller
                 'name' => $request->name,
                 'email' => $request->email,
                 'password' => Hash::make($request->password),
+                'role' => $request->role,
             ]);
             return response()->json(['status' => 200, 'message' => 'Register berhasil'], 200);
         } catch (\Throwable $th) {
