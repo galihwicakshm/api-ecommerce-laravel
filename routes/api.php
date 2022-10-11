@@ -23,6 +23,8 @@ Route::group(['middleware' => ['jwt.verify', 'role:admin']], function () {
     Route::resource('kategori', KategoriController::class);
 });
 
+Route::resource('barang', BarangController::class);
+
 Route::group(['middleware' => 'api', 'prefix' => 'auth'], function ($router) {
     Route::post('login', [AuthController::class, 'login']);
     Route::post('register', [AuthController::class, 'register']);
