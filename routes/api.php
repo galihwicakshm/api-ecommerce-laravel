@@ -19,11 +19,16 @@ use App\Http\Controllers\Api\KategoriController;
 
 
 Route::group(['middleware' => ['jwt.verify', 'role:admin']], function () {
-    Route::resource('barang', BarangController::class);
-    Route::resource('kategori', KategoriController::class);
+    Route::resource('barang', BarangController::class)->only(['store', 'update', 'destroy']);
+    Route::resource('kategori', KategoriController::class)->only(['store', 'update', 'destroy']);
 });
 
-Route::resource('barang', BarangController::class);
+//User tidak perlu login untuk GET dan SHOW
+Route::resource('barang', BarangController::class)->only(['index', 'show']);
+Route::resource('kategori', KategoriController::class)->only(['index', 'show']);
+
+
+
 
 Route::group(['middleware' => 'api', 'prefix' => 'auth'], function ($router) {
     Route::post('login', [AuthController::class, 'login']);
