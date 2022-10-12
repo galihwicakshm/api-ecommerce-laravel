@@ -18,7 +18,7 @@ class BarangController extends Controller
     public function index()
     {
         $barang = DB::table('barangs')->select('barangs.nama_barang', 'kategoris.nama_kategori', 'barangs.berat', 'barangs.harga', 'barangs.stok', 'barangs.deskripsi')->join('kategoris', 'barangs.id_kategori', '=', 'kategoris.id_kategori')->get();
-        return response()->json(['status' => 200, 'message' => 'Barang berhasil ditambahkan', 'data' => $barang], 200);
+        return response()->json(['status' => 200, 'message' => 'Barang berhasil ditampilkan', 'data' => $barang], 200);
     }
 
     /**
@@ -73,7 +73,7 @@ class BarangController extends Controller
         if ($barang != '[]') {
             return response()->json(['status' => 200, 'message' => 'Barang berhasil ditampilkan', 'data' => $barang]);
         } else {
-            return response()->json(['status' => 404, 'message' => 'Barang gagal ditampilkan'], 404);
+            return response()->json(['status' => 404, 'message' => 'Barang tidak ditemukan'], 404);
         }
     }
 
