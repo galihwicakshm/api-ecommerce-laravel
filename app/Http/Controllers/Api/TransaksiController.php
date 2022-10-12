@@ -19,12 +19,16 @@ class TransaksiController extends Controller
      */
     public function index()
     {
-        $transaksi = Transaksi::all();
+        $transaksi = DB::table('transaksis')->get();
+
 
         // $transaksi = DB::table('transaksis');
 
         return response()->json(['status' => 200, "message" => "Transaksi berhasil ditampilkan", "data" => $transaksi]);
     }
+
+
+
 
     /**
      * Show the form for creating a new resource.
@@ -44,9 +48,6 @@ class TransaksiController extends Controller
      */
     public function store(Request $request)
     {
-
-
-
 
         $id_user = auth()->user()->id_user;
 
@@ -120,12 +121,10 @@ class TransaksiController extends Controller
     {
         $transaksi = Transaksi::find($id);
 
-
-
         if ($transaksi != NULL) {
             return response()->json(['status' => 200, 'message' => 'Transaksi ditemukan', 'data' => $transaksi], 200);
         } else {
-            return response()->json(['status' => 404, 'message' => 'Transaksi tidak ditemukan'], 404);
+            return response()->json(['status' => 404, 'message' => 'Transaksi tidak ditemukan', 'data' => $transaksi], 404);
         }
     }
 
@@ -149,11 +148,19 @@ class TransaksiController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $transaksi = Transaksi::find($id);
+        // $transaksi = Transaksi::find($id);
 
-        $validator = Validator::make($request->all(), [
-            // 'id_user' => ['required'],
-            'no_order' => ['required'],
+        $transaksiGET = DB::table('transaksis')->join('detailorders', 'transaksis.no_order', '=', 'detailorders.no_order')->where('transaksis.id_transaksi', $id)->first();
+
+        $transaksiUPDATE = DB::table('transaksis')->join('detailorders', 'transaksis.no_order', '=', 'detailorders.no_order')->where('transaksis.id_transaksi', $id);
+
+        $detailUPDATE = DB::table('detailorders')->join('transaksis', 'detailorders.no_order', '=', 'transaksis.no_order')->where('transaksis.id_transaksi', '=', $id);
+
+        // $transaksi = Transaksi::where('no_order', $no_order);
+
+        $validatorTransaksi = Validator::make($request->all(), [
+
+
             'tanggal_order' => ['required'],
             'nama_penerima' => ['required'],
             'alamat' => ['required'],
@@ -164,10 +171,40 @@ class TransaksiController extends Controller
             'status_bayar' => ['required'],
         ]);
 
-        if ($transaksi != NULL && $validator->fails()) {
-            return response()->json(['status' => 422, 'errors' => $validator->errors()], 422);
-        } else if ($transaksi != NULL) {
-            return response()->json(['status' => 200, 'message' => 'Transaksi ditemukan', 'data' => $transaksi], 200);
+        $validatorDetail = Validator::make($request->all(), [
+
+            'id_barang' => ['required'],
+            'qty' => ['required'],
+
+        ]);
+
+        if (($transaksiGET != NULL && $validatorDetail->fails()) && $transaksiGET != NULL && $validatorTransaksi->fails()) {
+            return response()->json(['status' => 422, 'errors' => $validatorTransaksi->errors(), 'detail_order' => $validatorDetail->errors()], 422);
+        } else if ($transaksiGET != NULL && $validatorTransaksi->fails()) {
+            return response()->json(['status' => 422, 'errors' => $validatorTransaksi->errors()], 422);
+        } else if ($transaksiGET != NULL && $validatorDetail->fails()) {
+            return response()->json(['status' => 422, 'errors' => ['detail_order' => $validatorDetail->errors()]], 422);
+        } else if ($transaksiGET != NULL) {
+            $transaksiUPDATE->update([
+                'tanggal_order' => $request->tanggal_order,
+                'nama_penerima' => $request->nama_penerima,
+                'alamat' => $request->alamat,
+                'ongkir' => $request->ongkir,
+                'telp_penerima' => $request->telp_penerima,
+                'total_berat' => $request->total_berat,
+                'total_bayar' => $request->total_bayar,
+                'status_bayar' => $request->status_bayar,
+            ]);
+
+
+            $detailUPDATE->update([
+                'id_barang' => $request->id_barang,
+                'qty' => $request->qty,
+
+            ]);
+
+
+            return response()->json(['status' => 200, 'message' => 'Transaksi berhasil diperbarui', 'data' => $transaksiUPDATE->get()], 200);
         } else {
             return response()->json(['status' => 404, 'message' => 'Transaksi tidak ditemukan'], 404);
         }
