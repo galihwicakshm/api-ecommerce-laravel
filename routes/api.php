@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\BarangController;
 use App\Http\Controllers\Api\KategoriController;
+use App\Http\Controllers\Api\TransaksiController;
 
 /*
 |--------------------------------------------------------------------------
@@ -21,12 +22,14 @@ use App\Http\Controllers\Api\KategoriController;
 Route::group(['middleware' => ['jwt.verify', 'role:admin']], function () {
     Route::resource('barang', BarangController::class)->only(['store', 'update', 'destroy']);
     Route::resource('kategori', KategoriController::class)->only(['store', 'update', 'destroy']);
+    Route::resource('transaksi', TransaksiController::class)->only(['store', 'update', 'destroy']);
 });
 
 //User tidak perlu login untuk GET dan SHOW
+Route::resource('transaksi', TransaksiController::class)->only(['index', 'show']);
+
 Route::resource('barang', BarangController::class)->only(['index', 'show']);
 Route::resource('kategori', KategoriController::class)->only(['index', 'show']);
-
 
 
 
