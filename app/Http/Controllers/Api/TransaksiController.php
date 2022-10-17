@@ -150,64 +150,64 @@ class TransaksiController extends Controller
     {
         // $transaksi = Transaksi::find($id);
 
-        $transaksiGET = DB::table('transaksis')->join('detailorders', 'transaksis.no_order', '=', 'detailorders.no_order')->where('transaksis.id_transaksi', $id)->first();
+        // $transaksiGET = DB::table('transaksis')->join('detailorders', 'transaksis.no_order', '=', 'detailorders.no_order')->where('transaksis.id_transaksi', $id)->first();
 
-        $transaksiUPDATE = DB::table('transaksis')->join('detailorders', 'transaksis.no_order', '=', 'detailorders.no_order')->where('transaksis.id_transaksi', $id);
+        // $transaksiUPDATE = DB::table('transaksis')->join('detailorders', 'transaksis.no_order', '=', 'detailorders.no_order')->where('transaksis.id_transaksi', $id);
 
-        $detailUPDATE = DB::table('detailorders')->join('transaksis', 'detailorders.no_order', '=', 'transaksis.no_order')->where('transaksis.id_transaksi', '=', $id);
+        // $detailUPDATE = DB::table('detailorders')->join('transaksis', 'detailorders.no_order', '=', 'transaksis.no_order')->where('transaksis.id_transaksi', '=', $id);
 
-        // $transaksi = Transaksi::where('no_order', $no_order);
+        // // $transaksi = Transaksi::where('no_order', $no_order);
 
-        $validatorTransaksi = Validator::make($request->all(), [
-
-
-            'tanggal_order' => ['required'],
-            'nama_penerima' => ['required'],
-            'alamat' => ['required'],
-            'telp_penerima' => ['required'],
-            'total_berat' => ['required'],
-            'ongkir' => ['required'],
-            'total_bayar' => ['required'],
-            'status_bayar' => ['required'],
-        ]);
-
-        $validatorDetail = Validator::make($request->all(), [
-
-            'id_barang' => ['required'],
-            'qty' => ['required'],
-
-        ]);
-
-        if (($transaksiGET != NULL && $validatorDetail->fails()) && $transaksiGET != NULL && $validatorTransaksi->fails()) {
-            return response()->json(['status' => 422, 'errors' => $validatorTransaksi->errors(), 'detail_order' => $validatorDetail->errors()], 422);
-        } else if ($transaksiGET != NULL && $validatorTransaksi->fails()) {
-            return response()->json(['status' => 422, 'errors' => $validatorTransaksi->errors()], 422);
-        } else if ($transaksiGET != NULL && $validatorDetail->fails()) {
-            return response()->json(['status' => 422, 'errors' => ['detail_order' => $validatorDetail->errors()]], 422);
-        } else if ($transaksiGET != NULL) {
-            $transaksiUPDATE->update([
-                'tanggal_order' => $request->tanggal_order,
-                'nama_penerima' => $request->nama_penerima,
-                'alamat' => $request->alamat,
-                'ongkir' => $request->ongkir,
-                'telp_penerima' => $request->telp_penerima,
-                'total_berat' => $request->total_berat,
-                'total_bayar' => $request->total_bayar,
-                'status_bayar' => $request->status_bayar,
-            ]);
+        // $validatorTransaksi = Validator::make($request->all(), [
 
 
-            $detailUPDATE->update([
-                'id_barang' => $request->id_barang,
-                'qty' => $request->qty,
+        //     'tanggal_order' => ['required'],
+        //     'nama_penerima' => ['required'],
+        //     'alamat' => ['required'],
+        //     'telp_penerima' => ['required'],
+        //     'total_berat' => ['required'],
+        //     'ongkir' => ['required'],
+        //     'total_bayar' => ['required'],
+        //     'status_bayar' => ['required'],
+        // ]);
 
-            ]);
+        // $validatorDetail = Validator::make($request->all(), [
+
+        //     'id_barang' => ['required'],
+        //     'qty' => ['required'],
+
+        // ]);
+
+        // if (($transaksiGET != NULL && $validatorDetail->fails()) && $transaksiGET != NULL && $validatorTransaksi->fails()) {
+        //     return response()->json(['status' => 422, 'errors' => $validatorTransaksi->errors(), 'detail_order' => $validatorDetail->errors()], 422);
+        // } else if ($transaksiGET != NULL && $validatorTransaksi->fails()) {
+        //     return response()->json(['status' => 422, 'errors' => $validatorTransaksi->errors()], 422);
+        // } else if ($transaksiGET != NULL && $validatorDetail->fails()) {
+        //     return response()->json(['status' => 422, 'errors' => ['detail_order' => $validatorDetail->errors()]], 422);
+        // } else if ($transaksiGET != NULL) {
+        //     $transaksiUPDATE->update([
+        //         'tanggal_order' => $request->tanggal_order,
+        //         'nama_penerima' => $request->nama_penerima,
+        //         'alamat' => $request->alamat,
+        //         'ongkir' => $request->ongkir,
+        //         'telp_penerima' => $request->telp_penerima,
+        //         'total_berat' => $request->total_berat,
+        //         'total_bayar' => $request->total_bayar,
+        //         'status_bayar' => $request->status_bayar,
+        //     ]);
 
 
-            return response()->json(['status' => 200, 'message' => 'Transaksi berhasil diperbarui', 'data' => $transaksiUPDATE->get()], 200);
-        } else {
-            return response()->json(['status' => 404, 'message' => 'Transaksi tidak ditemukan'], 404);
-        }
+        //     $detailUPDATE->update([
+        //         'id_barang' => $request->id_barang,
+        //         'qty' => $request->qty,
+
+        //     ]);
+
+
+        //     return response()->json(['status' => 200, 'message' => 'Transaksi berhasil diperbarui', 'data' => $transaksiUPDATE->get()], 200);
+        // } else {
+        //     return response()->json(['status' => 404, 'message' => 'Transaksi tidak ditemukan'], 404);
+        // }
     }
 
     /**
