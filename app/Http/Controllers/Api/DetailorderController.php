@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\DetailOrder;
 use Illuminate\Http\Request;
 
 class DetailorderController extends Controller
@@ -14,7 +15,8 @@ class DetailorderController extends Controller
      */
     public function index()
     {
-        //
+        $detail = DetailOrder::all();
+        return response()->json(['status' => 200, 'message' => 'Detail Order berhasil ditampilkan', 'data' => $detail], 200);
     }
 
     /**

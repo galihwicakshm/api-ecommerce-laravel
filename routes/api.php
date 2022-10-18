@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\BarangController;
 use App\Http\Controllers\Api\KategoriController;
 use App\Http\Controllers\Api\TransaksiController;
+use App\Http\Controllers\Api\DetailorderController;
 
 /*
 |--------------------------------------------------------------------------
@@ -30,7 +31,7 @@ Route::resource('transaksi', TransaksiController::class)->only(['index', 'show']
 
 Route::resource('barang', BarangController::class)->only(['index', 'show']);
 Route::resource('kategori', KategoriController::class)->only(['index', 'show']);
-
+Route::resource('detailorder', DetailorderController::class)->only('index');
 
 
 Route::group(['middleware' => 'api', 'prefix' => 'auth'], function ($router) {

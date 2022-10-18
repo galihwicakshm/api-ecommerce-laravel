@@ -225,6 +225,8 @@ class TransaksiController extends Controller
         $detailDelete = DB::table('detailorders')->where('no_order', $no_order);
 
 
+
+
         if ($transaksi == '[]' && $detail == '[]') {
             return response()->json(['status' => 400, 'message' => 'Transaksi gagal dihapus'], 400);
         } else {
