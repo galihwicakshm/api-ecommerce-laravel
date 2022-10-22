@@ -28,6 +28,7 @@ Route::group(['middleware' => ['jwt.verify', 'role:admin']], function () {
     Route::resource('transaksi', TransaksiController::class)->only(['store', 'update', 'destroy']);
     Route::resource('cart', CartController::class)->only(['store', 'update', 'destroy']);
     Route::resource('checkout', CheckoutController::class);
+    Route::get('check', [CheckoutController::class, 'checkout']);
 });
 
 //User tidak perlu login untuk GET dan SHOW
