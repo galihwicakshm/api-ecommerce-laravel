@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Models\Barang;
 use App\Models\Transaksi;
 use App\Models\DetailOrder;
 use Illuminate\Http\Request;
@@ -19,12 +20,18 @@ class TransaksiController extends Controller
      */
     public function index()
     {
-        $transaksi = DB::table('transaksis')->get();
+        // $transaksi = DB::table('transaksis')->paginate(10);
+
+        $transaksi = Transaksi::join('detailorders', 'transaksis.no_order', '=', 'detailorders.no_order')->distinct('detailorders.no_order')->paginate(10);
+        // // $transaksi = DB::table('transaksis');
+
+        // // $data = array(
+        // //     'transaksi' => Transaksi::where('no_order', $no_order),
+        // // );
 
 
-        // $transaksi = DB::table('transaksis');
 
-        return response()->json(['status' => 200, "message" => "Transaksi berhasil ditampilkan", "data" => $transaksi]);
+        return response()->json(['status' => 200, "message" => "Transaksi berhasil ditampilkan", "data" => $transaksi], 200);
     }
 
 
@@ -83,6 +90,7 @@ class TransaksiController extends Controller
         }
 
         try {
+
             $barang = Transaksi::create([
                 'id_user' => $id_user,
                 'no_order' => $request->no_order,
@@ -104,7 +112,12 @@ class TransaksiController extends Controller
                 'qty' => $request->qty,
 
             ]);
-
+            $qtybarang = Barang::find($request->id_barang);
+            $qtybarangs = DB::table('barangs')->where('id_barang', $request->id_barang);
+            $qtyminus = ($qtybarang['stok'] - $request->qty);
+            $qtybarangs->update([
+                'stok' => $qtyminus
+            ]);
             return response()->json(['status' => 200, 'meesage' => 'Transaksi berhasil ditambahkan', 'data'  =>  $barang, 'detail_order' => $detail], 200);
         } catch (\Exception $e) {
             return response()->json(['status' => 400, 'errors' => $e->getMessage()], 400);

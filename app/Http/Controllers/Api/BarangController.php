@@ -17,7 +17,7 @@ class BarangController extends Controller
      */
     public function index()
     {
-        $barang = DB::table('barangs')->select('barangs.nama_barang', 'kategoris.nama_kategori', 'barangs.berat', 'barangs.harga', 'barangs.stok', 'barangs.deskripsi')->join('kategoris', 'barangs.id_kategori', '=', 'kategoris.id_kategori')->get();
+        $barang = DB::table('barangs')->select('barangs.id_barang', 'barangs.nama_barang', 'kategoris.nama_kategori', 'barangs.berat', 'barangs.harga', 'barangs.stok', 'barangs.deskripsi')->join('kategoris', 'barangs.id_kategori', '=', 'kategoris.id_kategori')->paginate(10);
         return response()->json(['status' => 200, 'message' => 'Barang berhasil ditampilkan', 'data' => $barang]);
     }
 
