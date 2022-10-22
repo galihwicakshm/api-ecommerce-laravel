@@ -50,7 +50,6 @@ class CartController extends Controller
             return response()->json(['status' => 422, 'errors' => $validator->errors()]);
         }
 
-        // var_dump($barang->stok);
 
         try {
             if ($request->qty < $barang['stok'] && $barang != null) {
@@ -68,7 +67,7 @@ class CartController extends Controller
             } else if ($request->qty > $barang['stok'] && $barang != null) {
                 return response()->json(['status' => 400, 'message' => 'Melebihi stok', $barang]);
             } else {
-                return response()->json(['status' => 404, 'errors' => 'Barang tidak ditemukan']);
+                return response()->json(['status' => 404, 'errors' => 'Barang tidak ditemukan ']);
             }
         } catch (\Throwable $th) {
             return response()->json(['status' => 404, 'errors' => $th->getMessage()]);

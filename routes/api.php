@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CartController;
 use App\Http\Controllers\Api\BarangController;
+use App\Http\Controllers\Api\CheckoutController;
 use App\Http\Controllers\Api\KategoriController;
 use App\Http\Controllers\Api\TransaksiController;
 use App\Http\Controllers\Api\DetailorderController;
@@ -26,6 +27,7 @@ Route::group(['middleware' => ['jwt.verify', 'role:admin']], function () {
     Route::resource('kategori', KategoriController::class)->only(['store', 'update', 'destroy']);
     Route::resource('transaksi', TransaksiController::class)->only(['store', 'update', 'destroy']);
     Route::resource('cart', CartController::class)->only(['store', 'update', 'destroy']);
+    Route::resource('checkout', CheckoutController::class);
 });
 
 //User tidak perlu login untuk GET dan SHOW
