@@ -17,7 +17,8 @@ class CartController extends Controller
      */
     public function index()
     {
-        $cart = Cart::all();
+        $id_user = auth()->user()->id_user;
+        $cart = Cart::where('id_user', $id_user)->get();
         return response()->json(['status' => 200, 'message' => 'Cart berhasil ditampilkan', 'data' => $cart], 200);
     }
 
@@ -38,15 +39,15 @@ class CartController extends Controller
      */
     public function store(Request $request)
     {
-        $barang = Barang::find($request->id_barang);
         $validator = Validator::make($request->all(), [
             'id_barang' => ['required'],
             'qty' => ['required']
         ]);
         if ($validator->fails()) {
-            return response()->json(['status' => 422, 'errors' => $validator->errors()]);
+            return response()->json(['status' => 422, 'errors' => $validator->errors()], 422);
         }
         try {
+            $barang = Barang::find($request->id_barang);
             if ($request->qty < $barang['stok'] && $barang != null) {
                 $id_user = auth()->user()->id_user;
                 $cart = Cart::join('barangs', 'barangs.id_barang', '=', 'carts.id_barang')->where('id_user', $id_user)->get();
@@ -70,9 +71,9 @@ class CartController extends Controller
                     return response()->json(['status' => 200, 'mesasge' => 'Cart berhasil ditambahkan', 'data' => $cart], 200);
                 }
             } else if ($request->qty > $barang['stok'] && $barang != null) {
-                return response()->json(['status' => 400, 'message' => 'Melebihi stok', $barang]);
+                return response()->json(['status' => 422, 'message' => 'Melebihi stok', $barang], 422);
             } else {
-                return response()->json(['status' => 404, 'errors' => 'Barang tidak ditemukan ']);
+                return response()->json(['status' => 400, 'errors' => 'Barang tidak ditemukan'], 400);
             }
         } catch (\Throwable $th) {
             return response()->json(['status' => 404, 'errors' => $th->getMessage()]);
