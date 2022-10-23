@@ -27,8 +27,11 @@ Route::group(['middleware' => ['jwt.verify', 'role:admin']], function () {
     Route::resource('kategori', KategoriController::class)->only(['store', 'update', 'destroy']);
     Route::resource('transaksi', TransaksiController::class)->only(['store', 'update', 'destroy']);
     Route::resource('cart', CartController::class)->only(['store', 'update', 'destroy']);
-    Route::resource('checkout', CheckoutController::class);
-    Route::get('check', [CheckoutController::class, 'checkout']);
+    Route::delete('carts/{id_user}', [CartController::class, 'destroyAll']);
+    Route::post('check', [CheckoutController::class, 'checkout']);
+    Route::put('carts/{id_barang}', [CartController::class, 'updateCart']);
+
+    // Route::resource('checkout', CheckoutController::class);
 });
 
 //User tidak perlu login untuk GET dan SHOW

@@ -19,11 +19,11 @@ class CheckoutController extends Controller
     {
 
 
-        $id_user = auth()->user()->id_user;
-        $cart = Cart::where('id_user', $id_user)->get();
-        // $test = $cart[0]->id_barang;
-        // $last = $cart->where('id_barang', $test);
-        return response()->json(['status' => 200, 'message' => $cart]);
+        // $id_user = auth()->user()->id_user;
+        // $cart = Cart::where('id_user', $id_user)->get();
+        // // $test = $cart[0]->id_barang;
+        // // $last = $cart->where('id_barang', $test);
+        // return response()->json(['status' => 200, 'message' => $cart]);
     }
 
 
