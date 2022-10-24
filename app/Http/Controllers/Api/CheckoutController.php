@@ -31,19 +31,22 @@ class CheckoutController extends Controller
     {
         $id_user = auth()->user()->id_user;
         $cart = DB::table('carts')->join('barangs', 'barangs.id_barang', '=', 'carts.id_barang')->where('id_user', $id_user)->get();
-
-
         try {
-            foreach ($cart as $cart) {
-                $id_barang = $cart->id_barang;
-                $carts = DB::table('carts')->join('barangs', 'barangs.id_barang', '=', 'carts.id_barang')->where('id_user', $id_user)->where('barangs.id_barang', $id_barang);
-                $kurang = $cart->stok - $cart->qty;
-                $carts->update(['stok' => $kurang]);
-                $check =  DB::table('carts')->where('id_user', $id_user)->where('id_barang', $id_barang);
-                $check->delete();
-            }
+            if ($cart) {
 
-            return response()->json(['status' => 200, 'message' =>  $cart]);
+                foreach ($cart as $cart) {
+                    $id_barang = $cart->id_barang;
+                    // $carts = DB::table('carts')->join('barangs', 'barangs.id_barang', '=', 'carts.id_barang')->where('id_user', $id_user)->where('barangs.id_barang', $id_barang);
+                    $carts = Barang::where('id_barang', $id_barang);
+                    $kurang = $cart->stok - $cart->qty;
+                    $carts->update(['stok' => $kurang]);
+                    $check =  DB::table('carts')->where('id_user', $id_user)->where('id_barang', $id_barang);
+                    $check->delete();
+                }
+                return response()->json(['status' => 200, 'message' =>  true]);
+            } else {
+                return response()->json(['status' => 200, 'message' =>  'error']);
+            }
         } catch (\Throwable $th) {
             return response()->json(['status' => 200, 'message' =>  $th->getMessage()]);
         }
