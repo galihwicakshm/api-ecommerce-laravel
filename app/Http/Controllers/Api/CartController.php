@@ -51,7 +51,7 @@ class CartController extends Controller
         }
         try {
             $barang = Barang::find($request->id_barang);
-            if ($request->qty < $barang['stok'] && $barang != null) {
+            if ($request->qty <= $barang['stok'] && $barang != null) {
                 $cart = Cart::join('barangs', 'barangs.id_barang', '=', 'carts.id_barang')->where('id_user', $id_user)->get();
                 $carts = Cart::where('id_user', $id_user)->where('id_barang', $request->id_barang)->get();
                 if ($carts == '[]') {
