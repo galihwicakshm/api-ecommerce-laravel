@@ -46,7 +46,6 @@ class CartController extends Controller
             'id_barang' => ['required'],
             'qty' => ['required']
         ]);
-
         if ($validator->fails()) {
             return response()->json(['status' => 422, 'errors' => $validator->errors()], 422);
         }
@@ -128,8 +127,6 @@ class CartController extends Controller
         $id_user = auth()->user()->id_user;
 
         $getcart = Cart::where('id_user', $id_user)->where('id_barang', $id_barang)->get();
-
-
         try {
             if ($getcart != '[]') {
                 Cart::where('id_barang', $id_barang)->update(['qty' => $request->qty]);
@@ -140,7 +137,55 @@ class CartController extends Controller
         } catch (\Throwable $th) {
             return response()->json(['status' => 200, 'message' => 'Berhasil update', 'data' => $th->getMessage()]);
         }
+
+        // $id_user = auth()->user()->id_user;
+
+        // $getcart = Cart::where('id_user', $id_user)->where('id_cart', $request->id_cart);
+
+        // try {
+        //     $GG = $getcart->update(['qty' => $request->qty]);
+        //     return  response()->json(['status' => 200, 'message' => $getcart->get()]);
+        // } catch (\Throwable $th) {
+        //     return  response()->json(['status' => 200, 'message' => $th->getMessage()]);
+        // }
     }
+
+    public function updateIncrement($id_cart)
+    {
+        $id_user = auth()->user()->id_user;
+
+        $getcart = Cart::where('id_user', $id_user)->where('id_cart', $id_cart)->get();
+        try {
+            if ($getcart != '[]') {
+                $cart = $getcart[0]->qty + 1;
+                Cart::where('id_cart', $id_cart)->update(['qty' => $cart]);
+                return response()->json(['status' => 200, 'message' => 'Berhasil update', 'data' => $getcart]);
+            } else if ($getcart == '[]') {
+                return response()->json(['status' => 404, 'errors' => 'Data tidak ditemukan'], 404);
+            }
+        } catch (\Throwable $th) {
+            return response()->json(['status' => 200, 'message' => 'Berhasil update', 'data' => $th->getMessage()]);
+        }
+    }
+
+    public function updateDecrement($id_cart)
+    {
+        $id_user = auth()->user()->id_user;
+
+        $getcart = Cart::where('id_user', $id_user)->where('id_cart', $id_cart)->get();
+        try {
+            if ($getcart != '[]') {
+                $cart = $getcart[0]->qty - 1;
+                Cart::where('id_cart', $id_cart)->update(['qty' => $cart]);
+                return response()->json(['status' => 200, 'message' => 'Berhasil update', 'data' => $getcart]);
+            } else if ($getcart == '[]') {
+                return response()->json(['status' => 404, 'errors' => 'Data tidak ditemukan'], 404);
+            }
+        } catch (\Throwable $th) {
+            return response()->json(['status' => 200, 'message' => 'Berhasil update', 'data' => $th->getMessage()]);
+        }
+    }
+
 
     /**
      * Remove the specified resource from storage.

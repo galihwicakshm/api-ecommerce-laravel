@@ -29,7 +29,9 @@ Route::group(['middleware' => ['jwt.verify', 'role:admin']], function () {
     Route::resource('cart', CartController::class)->only(['store', 'update', 'destroy']);
     Route::delete('carts/{id_user}', [CartController::class, 'destroyAll']);
     Route::post('check', [CheckoutController::class, 'checkout']);
-    Route::put('carts/{id_barang}', [CartController::class, 'updateCart']);
+    Route::put('cartsupdate', [CartController::class, 'updateCart']);
+    Route::post('cartsinc/{id_cart}', [CartController::class, 'updateIncrement']);
+    Route::post('cartsdec/{id_cart}', [CartController::class, 'updateDecrement']);
 
     // Route::resource('checkout', CheckoutController::class);
 });
