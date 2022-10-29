@@ -17,7 +17,7 @@ class BarangController extends Controller
      */
     public function index()
     {
-        $barang = DB::table('barangs')->select('barangs.id_barang', 'barangs.nama_barang', 'kategoris.nama_kategori', 'barangs.berat', 'barangs.harga', 'barangs.stok', 'barangs.deskripsi')->join('kategoris', 'barangs.id_kategori', '=', 'kategoris.id_kategori')->paginate(10);
+        $barang = DB::table('barangs')->select('barangs.id_barang', 'barangs.nama_barang', 'kategoris.nama_kategori', 'barangs.berat', 'barangs.harga', 'barangs.stok', 'barangs.deskripsi')->join('kategoris', 'barangs.id_kategori', '=', 'kategoris.id_kategori')->paginate(2);
         return response()->json(['status' => 200, 'message' => 'Barang berhasil ditampilkan', 'data' => $barang]);
     }
 
@@ -34,6 +34,8 @@ class BarangController extends Controller
     /**
      * Store a newly created resource in storage.
      *
+     *
+    
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
@@ -47,6 +49,7 @@ class BarangController extends Controller
             'harga' => ['required'],
             'deskripsi' => ['required'],
         ]);
+
 
         if ($validator->fails()) {
             return response()->json(['status' => 400, 'errors' => $validator->errors()], 400);

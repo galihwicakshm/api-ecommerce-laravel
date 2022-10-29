@@ -80,6 +80,8 @@ class CartController extends Controller
                 return response()->json(['status' => 404, 'errors' => 'Barang tidak ditemukan'], 404);
             }
         } catch (\Throwable $th) {
+            return response()->json(['status' => 404, 'errors' => 'Barang tidak ditemukan'], 404);
+
             return response()->json(['status' => 500, 'errors' => $th->getMessage()]);
         }
     }
