@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CartController;
+use App\Http\Controllers\RedirectController;
 use App\Http\Controllers\Api\BarangController;
 use App\Http\Controllers\Api\CheckoutController;
 use App\Http\Controllers\Api\KategoriController;
@@ -29,10 +30,9 @@ Route::group(['middleware' => ['jwt.verify', 'role:admin']], function () {
     Route::resource('cart', CartController::class)->only(['store', 'update', 'destroy']);
     Route::delete('carts/{id_user}', [CartController::class, 'destroyAll']);
     Route::post('check', [CheckoutController::class, 'checkout']);
-    Route::put('cartsupdate', [CartController::class, 'updateCart']);
+    Route::put('cartsupdate/{id_cart}', [CartController::class, 'updateCart']);
     Route::post('cartsinc/{id_cart}', [CartController::class, 'updateIncrement']);
     Route::post('cartsdec/{id_cart}', [CartController::class, 'updateDecrement']);
-
     // Route::resource('checkout', CheckoutController::class);
 });
 
@@ -42,6 +42,8 @@ Route::resource('cart', CartController::class);
 Route::resource('barang', BarangController::class)->only(['index', 'show']);
 Route::resource('kategori', KategoriController::class)->only(['index', 'show']);
 Route::resource('detailorder', DetailorderController::class)->only('index');
+Route::get('cobaredirect', [RedirectController::class, 'index'])->name('cobaredirect');
+
 
 
 Route::group(['middleware' => 'api', 'prefix' => 'auth'], function ($router) {

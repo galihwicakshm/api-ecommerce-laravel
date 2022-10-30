@@ -127,15 +127,21 @@ class CartController extends Controller
         // return response()->json(['status' => 200, 'message' => 'Berhasil update', 'data' => $cart]);
     }
 
-    public function updateCart(Request $request, $id_barang)
+    public function updateCart(Request $request, $id_cart)
     {
         $id_user = auth()->user()->id_user;
 
-        $getcart = Cart::where('id_user', $id_user)->where('id_barang', $id_barang)->get();
+        $getcart = Cart::where('id_user', $id_user)->where('id_cart', $id_cart)->get();
+        $lebih = Cart::join('barangs', 'barangs.id_barang', '=', 'carts.id_barang')->where('id_user', $id_user)->get();
+        $brg = Cart::join('barangs', 'barangs.id_barang', '=', 'carts.id_barang')->where('id_user', $id_user)->get();
+
         try {
-            if ($getcart != '[]') {
-                Cart::where('id_barang', $id_barang)->update(['qty' => $request->qty]);
-                return response()->json(['status' => 200, 'message' => 'Berhasil update', 'data' => $getcart]);
+            if ($getcart != '[]' && $request->qty > $brg[0]->stok) {
+                return response()->json(['status' => 422, 'message' => 'Melebihi stok'], 422);
+            } else if ($getcart != '[]') {
+                Cart::where('id_cart', $id_cart)->update(['qty' => $request->qty]);
+                $new = Cart::where('id_user', $id_user)->where('id_cart', $id_cart)->get();
+                return response()->json(['status' => 200, 'message' => 'Berhasil update', 'data' => $new], 200);
             } else if ($getcart == '[]') {
                 return response()->json(['status' => 404, 'errors' => 'Data tidak ditemukan'], 404);
             }

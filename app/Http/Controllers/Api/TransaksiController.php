@@ -104,7 +104,6 @@ class TransaksiController extends Controller
                 'status_bayar' => $request->status_bayar,
             ]);
 
-
             $detail = DetailOrder::create([
                 'no_order' => $transaksi['no_order'],
                 'id_user' =>  $id_user,
