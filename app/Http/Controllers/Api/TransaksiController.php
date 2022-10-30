@@ -150,7 +150,7 @@ class TransaksiController extends Controller
         }
         try {
             if ($checkcart == '[]') {
-                echo 'keranjang kosong';
+                return response()->json(['status' => 404, 'errors' => 'Keranjang kosong'], 404);
             }
             foreach ($cart as $cart) {
                 if ($cart->qty > $cart->stok) {
@@ -164,8 +164,8 @@ class TransaksiController extends Controller
                 $detail = DetailOrder::create([
                     'no_order' => $transaksi['no_order'],
                     'id_user' => $id_user,
-                    // 'id_barang' => $id_barang,
-                    // 'qty' => $cart->qty
+                    'id_barang' => $id_barang,
+                    'qty' => $cart->qty
                 ]);
                 $carts = Barang::where('id_barang', $id_barang);
                 $kurang = $cart->stok - $cart->qty;
