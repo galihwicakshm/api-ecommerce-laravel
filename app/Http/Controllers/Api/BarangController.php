@@ -4,21 +4,27 @@ namespace App\Http\Controllers\Api;
 
 use App\Models\Barang;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use App\Repositories\Barang\BarangRepository;
 use Illuminate\Support\Facades\Validator;
 
 class BarangController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+
+
+    public $barangRepository;
+
+    public function __construct(BarangRepository $barangRepository)
+    {
+        $this->barangRepository = $barangRepository;
+    }
+
+
     public function index()
     {
-        $barang = DB::table('barangs')->select('barangs.id_barang', 'barangs.nama_barang', 'kategoris.nama_kategori', 'barangs.berat', 'barangs.harga', 'barangs.stok', 'barangs.deskripsi')->join('kategoris', 'barangs.id_kategori', '=', 'kategoris.id_kategori')->paginate(2);
-        return response()->json(['status' => 200, 'message' => 'Barang berhasil ditampilkan', 'data' => $barang]);
+
+        $barang = $this->barangRepository->getAll();
+        return $barang;
     }
 
     /**
@@ -59,7 +65,7 @@ class BarangController extends Controller
             $barang = Barang::create($request->all());
             return response()->json(['status' => 200, 'message' => 'Barang berhasil ditambahkan', 'data' => $barang]);
         } catch (\Throwable $th) {
-            return response()->json(['status' => 400, 'message' => 'Barang gagal ditambahkan', ' errors' => $th->getMessage()], 400);
+            return response()->json(['status' => 500, 'message' => 'Barang gagal ditambahkan', ' errors' => $th->getMessage()], 500);
         }
     }
 
@@ -71,8 +77,8 @@ class BarangController extends Controller
      */
     public function show($id)
     {
-        $barang = DB::table('barangs')->select('barangs.nama_barang', 'kategoris.nama_kategori', 'barangs.berat', 'barangs.harga', 'barangs.stok', 'barangs.deskripsi')->join('kategoris', 'barangs.id_kategori', '=', 'kategoris.id_kategori')->where('barangs.id_barang', $id)->get();
 
+        $barang = $this->barangRepository->cariBarang($id);
         if ($barang != '[]') {
             return response()->json(['status' => 200, 'message' => 'Barang berhasil ditampilkan', 'data' => $barang]);
         } else {
@@ -100,8 +106,9 @@ class BarangController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $barang = Barang::find($id);
 
+
+        $barang = $this->barangRepository->findBarang($id);
         $validator = Validator::make($request->all(), [
             'id_kategori' => ['required'],
             'nama_barang' => ['required'],
@@ -129,13 +136,13 @@ class BarangController extends Controller
      */
     public function destroy($id)
     {
-        $barang = Barang::find($id);
+        $barang = $this->barangRepository->findBarang($id);
 
         try {
             $barang->delete();
             return response()->json(['status' => 200, 'message' => 'Barang berhasil dihapus'], 200);
         } catch (\Throwable $th) {
-            return response()->json(['status' => 400, 'message' => 'Barang gagal dihapus'], 400);
+            return response()->json(['status' => 500, 'message' => 'Barang gagal dihapus'], 500);
         }
     }
 }

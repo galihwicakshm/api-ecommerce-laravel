@@ -188,7 +188,7 @@ class TransaksiController extends Controller
             ]);
             return response()->json(['status' => 200, 'meesage' => 'Transaksi berhasil ditambahkan', 'data' => $barang, 'detail_order' => $detail, $lebih, $brg, $lebih > $brg], 200);
         } catch (\Throwable $th) {
-            return response()->json(['status' => 500, 'message' => $th->getMessage()]);
+            return response()->json(['status' => 500, 'message' => $th->getMessage()], 500);
         }
     }
     /**
@@ -308,7 +308,7 @@ class TransaksiController extends Controller
 
 
         if ($transaksi == '[]' && $detail == '[]') {
-            return response()->json(['status' => 400, 'message' => 'Transaksi gagal dihapus'], 400);
+            return response()->json(['status' => 500, 'message' => 'Transaksi gagal dihapus'], 500);
         } else {
             $transaksiDelete->delete();
             $detailDelete->delete();

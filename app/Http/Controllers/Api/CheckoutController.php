@@ -92,7 +92,7 @@ class CheckoutController extends Controller
                     try {
                         return response()->json(['status' => 422, 'message' => 'Melebihi Stok']);
                     } catch (\Throwable $th) {
-                        return response()->json(['status' => 500, 'errors' => $th->getMessage()]);
+                        return response()->json(['status' => 500, 'errors' => $th->getMessage()], 500);
                     }
                 }
             }
@@ -103,7 +103,7 @@ class CheckoutController extends Controller
             // return  redirect()->route('barang')->with('message', 'OKE');
             // return response()->json(['status' => 200, 'message' => 'Silahkan direct ke Transaksi']);
         } catch (\Throwable $th) {
-            return response()->json(['status' => 500, 'errors' => $th->getMessage()]);
+            return response()->json(['status' => 500, 'errors' => $th->getMessage()], 500);
         }
     }
 

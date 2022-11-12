@@ -122,7 +122,7 @@ class KategoriController extends Controller
             $kategori->delete();
             return response()->json(['status' => 200, 'message' => 'Data berhasil dihapus']);
         } catch (\Throwable $th) {
-            return response()->json(['status' => 400, 'message' => 'Data gagal dihapus'], 400);
+            return response()->json(['status' => 500, 'errors' => $th->getMessage()], 500);
         }
     }
 }

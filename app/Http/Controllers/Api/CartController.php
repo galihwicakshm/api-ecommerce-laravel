@@ -146,19 +146,8 @@ class CartController extends Controller
                 return response()->json(['status' => 404, 'errors' => 'Data tidak ditemukan'], 404);
             }
         } catch (\Throwable $th) {
-            return response()->json(['status' => 200, 'message' => 'Berhasil update', 'data' => $th->getMessage()]);
+            return response()->json(['status' => 500, 'errors' => $th->getMessage()], 500);
         }
-
-        // $id_user = auth()->user()->id_user;
-
-        // $getcart = Cart::where('id_user', $id_user)->where('id_cart', $request->id_cart);
-
-        // try {
-        //     $GG = $getcart->update(['qty' => $request->qty]);
-        //     return  response()->json(['status' => 200, 'message' => $getcart->get()]);
-        // } catch (\Throwable $th) {
-        //     return  response()->json(['status' => 200, 'message' => $th->getMessage()]);
-        // }
     }
 
     public function updateIncrement($id_cart)
@@ -178,7 +167,7 @@ class CartController extends Controller
                 return response()->json(['status' => 404, 'errors' => 'Data tidak ditemukan'], 404);
             }
         } catch (\Throwable $th) {
-            return response()->json(['status' => 200, 'message' => 'Berhasil update', 'data' => $th->getMessage()]);
+            return response()->json(['status' => 500, 'errors' => $th->getMessage()], 500);
         }
     }
 
@@ -199,7 +188,7 @@ class CartController extends Controller
                 return response()->json(['status' => 404, 'errors' => 'Data tidak ditemukan'], 404);
             }
         } catch (\Throwable $th) {
-            return response()->json(['status' => 200, 'message' => 'Berhasil update', 'data' => $th->getMessage()]);
+            return response()->json(['status' => 500,  'errors' => $th->getMessage()], 500);
         }
     }
 
@@ -225,7 +214,7 @@ class CartController extends Controller
                 return response()->json(['status' => 404, 'errors' => 'Data tidak ditemukan'], 404);
             }
         } catch (\Throwable $th) {
-            return response()->json(['status' => 200, 'message' => 'Berhasil update', 'data' => $th->getMessage()]);
+            return response()->json(['status' => 500,  'errors' => $th->getMessage()], 500);
         }
     }
 
@@ -242,7 +231,7 @@ class CartController extends Controller
                 return response()->json(['status' => 404, 'errors' => 'Data tidak ditemukan'], 404);
             }
         } catch (\Throwable $th) {
-            return response()->json(['status' => 400, 'message' => 'Berhasil update', 'data' => $th->getMessage()]);
+            return response()->json(['status' => 500, 'errors' => $th->getMessage()], 500);
         }
     }
 }
