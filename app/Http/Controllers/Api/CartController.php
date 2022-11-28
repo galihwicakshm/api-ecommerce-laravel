@@ -7,6 +7,8 @@ use App\Models\Barang;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use App\Repositories\Cart\CartRepository;
+use App\Services\Cart\CartService;
 use Illuminate\Support\Facades\Validator;
 
 class CartController extends Controller
@@ -16,11 +18,20 @@ class CartController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
+    public $cartRepository;
+    public $cartServices;
+
+    public function __construct(CartRepository $cartRepository, CartService $cartService)
+    {
+        $this->cartRepository = $cartRepository;
+        $this->cartService = $cartService;
+    }
+
     public function index()
     {
-        $id_user = auth()->user()->id_user;
-        $cart = Cart::where('id_user', $id_user)->get();
-        return response()->json(['status' => 200, 'message' => 'Cart berhasil ditampilkan', 'data' => $cart], 200);
+        $cart = $this->cartRepository->getAll();
+        return $cart;
     }
 
     /**
@@ -51,9 +62,10 @@ class CartController extends Controller
         }
         try {
             $barang = Barang::find($request->id_barang);
+            // $this->cartServices->store($request);
             if ($request->qty <= $barang['stok'] && $barang != null) {
-                $cart = Cart::join('barangs', 'barangs.id_barang', '=', 'carts.id_barang')->where('id_user', $id_user)->get();
-                $carts = Cart::where('id_user', $id_user)->where('id_barang', $request->id_barang)->get();
+                $cart = $this->cartRepository->joinBarangAuthID()->get();
+                $carts = $this->cartRepository->joinBarangWhere($request)->get();
                 if ($carts == '[]') {
                     $total = $barang->harga * $request->qty;
                     $cart = Cart::create([
@@ -67,11 +79,11 @@ class CartController extends Controller
                 } else if ($barang['stok'] == $carts[0]->qty || $barang['stok'] < $carts[0]->qty || $request->qty + $carts[0]->qty > $barang['stok']) {
                     return response()->json(['status' => 422, 'message' => 'Melebihi stok'], 422);
                 } else if ($carts[0]->id_barang == $request->id_barang) {
-                    $cartUpdate = Cart::where('id_user', $id_user)->where('id_barang', $request->id_barang);
+                    $cartUpdate = $this->cartRepository->joinBarangWhere($request);
                     $getCart = $cartUpdate->get();
                     $updateQty = $getCart[0]->qty + $request->qty;
                     $cartUpdate->update(['qty' => $updateQty]);
-                    $dataAfter = Cart::where('id_user', $id_user)->where('id_barang', $request->id_barang)->get();
+                    $dataAfter = $this->cartRepository->joinBarangWhere($request)->get();
                     return response()->json(['status' => 200, 'message' => 'Cart berhasil ditambahkan', 'data' =>  $dataAfter], 200);
                 }
             } else if (($request->qty > $barang['stok'] && $barang != null)) {
@@ -81,12 +93,12 @@ class CartController extends Controller
             }
         } catch (\Throwable $th) {
             return response()->json(['status' => 404, 'errors' => 'Barang tidak ditemukan'], 404);
-
-            return response()->json(['status' => 500, 'errors' => $th->getMessage()]);
+            return response()->json(['status' => 500, 'errors' => $th->getMessage()], 500);
         }
     }
 
 
+    // 
     // $getCart = Cart::where('id_user', $id_user)->where('id_barang', $request->id_barang)->get();
 
     /**

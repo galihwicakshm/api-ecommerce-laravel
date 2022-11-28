@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CartController;
 use App\Http\Controllers\RedirectController;
+use App\Http\Controllers\Api\UsersController;
 use App\Http\Controllers\Api\BarangController;
 use App\Http\Controllers\Api\CheckoutController;
 use App\Http\Controllers\Api\KategoriController;
@@ -53,3 +54,6 @@ Route::group(['middleware' => 'api', 'prefix' => 'auth'], function ($router) {
     Route::post('refresh', [AuthController::class, 'register']);
     Route::post('me', [AuthController::class, 'me']);
 });
+
+
+Route::resource('users', UsersController::class);

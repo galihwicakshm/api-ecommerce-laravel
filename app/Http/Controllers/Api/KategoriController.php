@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
+use App\Repositories\Kategori\KategoriRepository;
 use Symfony\Component\HttpFoundation\Response;
 
 class KategoriController extends Controller
@@ -16,10 +17,20 @@ class KategoriController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
+    public $kategoriRepository;
+
+    public function __construct(kategoriRepository $kategoriRepository)
+    {
+        $this->kategoriRepository = $kategoriRepository;
+    }
+
+
+
     public function index()
     {
-        $kategori = Kategori::paginate(10);
-        return response()->json(['status' => 200, 'message' => 'Kategori berhasil ditampilkan', 'data' => $kategori]);
+        $barang = $this->kategoriRepository->getAll();
+        return $barang;
     }
 
     /**
@@ -62,9 +73,7 @@ class KategoriController extends Controller
     public function show($id)
     {
 
-        $kategori = Kategori::find($id);
-
-
+        $kategori = $this->kategoriRepository->findKategori($id);
         if ($kategori != NULL) {
             return response()->json(['status' => 200, 'message' => 'Kategori berhasil ditampilkan', 'data' => $kategori]);
         } else {
@@ -92,7 +101,7 @@ class KategoriController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $kategori = Kategori::find($id);
+        $kategori = $this->kategoriRepository->findKategori($id);
 
         $validator = Validator::make($request->all(), [
             'nama_kategori' => ['required']
@@ -116,8 +125,7 @@ class KategoriController extends Controller
      */
     public function destroy($id)
     {
-        $kategori = Kategori::find($id);
-
+        $kategori = $this->kategoriRepository->findKategori($id);
         try {
             $kategori->delete();
             return response()->json(['status' => 200, 'message' => 'Data berhasil dihapus']);

@@ -4,7 +4,10 @@ namespace App\Repositories\Kategori;
 
 use LaravelEasyRepository\Repository;
 
-interface KategoriRepository extends Repository{
+interface KategoriRepository extends Repository
+{
 
-    // Write something awesome :)
+    public function getAll();
+
+    public function findKategori($id);
 }

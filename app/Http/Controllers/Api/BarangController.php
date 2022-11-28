@@ -5,18 +5,22 @@ namespace App\Http\Controllers\Api;
 use App\Models\Barang;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Repositories\Barang\BarangRepository;
+use App\Services\Barang\BarangService;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+use App\Repositories\Barang\BarangRepository;
 
 class BarangController extends Controller
 {
 
 
     public $barangRepository;
+    public $barangService;
 
-    public function __construct(BarangRepository $barangRepository)
+    public function __construct(BarangRepository $barangRepository, BarangService $barangService)
     {
         $this->barangRepository = $barangRepository;
+        $this->barangService = $barangService;
     }
 
 
@@ -54,18 +58,19 @@ class BarangController extends Controller
             'stok' => ['required'],
             'harga' => ['required'],
             'deskripsi' => ['required'],
+            'gambar_name' => 'required|image:jpeg,png,jpg,gif,svg|max:2048'
         ]);
 
 
         if ($validator->fails()) {
-            return response()->json(['status' => 400, 'errors' => $validator->errors()], 400);
+            return response()->json(['status' => 422, 'errors' => $validator->errors()], 422);
         }
 
         try {
-            $barang = Barang::create($request->all());
+            $barang = $this->barangService->store($request);
             return response()->json(['status' => 200, 'message' => 'Barang berhasil ditambahkan', 'data' => $barang]);
         } catch (\Throwable $th) {
-            return response()->json(['status' => 500, 'message' => 'Barang gagal ditambahkan', ' errors' => $th->getMessage()], 500);
+            return response()->json(['status' => 500,  ' errors' => $th->getMessage()], 500);
         }
     }
 
@@ -78,7 +83,7 @@ class BarangController extends Controller
     public function show($id)
     {
 
-        $barang = $this->barangRepository->cariBarang($id);
+        $barang = $this->barangRepository->findBarangKategori($id);
         if ($barang != '[]') {
             return response()->json(['status' => 200, 'message' => 'Barang berhasil ditampilkan', 'data' => $barang]);
         } else {

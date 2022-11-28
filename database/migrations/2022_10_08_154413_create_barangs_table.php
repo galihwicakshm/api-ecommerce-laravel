@@ -21,6 +21,8 @@ class CreateBarangsTable extends Migration
             $table->integer('stok');
             $table->integer('harga');
             $table->string('deskripsi');
+            $table->string('gambar_name')->nullable();
+            $table->string('gambar_url')->nullable();
             $table->timestamps();
         });
     }
