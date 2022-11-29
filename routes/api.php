@@ -26,6 +26,7 @@ use App\Http\Controllers\Api\DetailorderController;
 
 Route::group(['middleware' => ['jwt.verify', 'role:admin']], function () {
     Route::resource('barang', BarangController::class)->only(['store', 'update', 'destroy']);
+    // Route::post('barang/{id}', [BarangController::class, 'update']);
     Route::resource('kategori', KategoriController::class)->only(['store', 'update', 'destroy']);
     Route::resource('transaksi', TransaksiController::class)->only(['store', 'update', 'destroy']);
     Route::resource('cart', CartController::class)->only(['store', 'update', 'destroy']);

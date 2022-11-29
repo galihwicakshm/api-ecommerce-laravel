@@ -112,7 +112,6 @@ class BarangController extends Controller
     public function update(Request $request, $id)
     {
 
-
         $barang = $this->barangRepository->findBarang($id);
         $validator = Validator::make($request->all(), [
             'id_kategori' => ['required'],
@@ -121,17 +120,32 @@ class BarangController extends Controller
             'stok' => ['required'],
             'harga' => ['required'],
             'deskripsi' => ['required'],
+            'gambar_name' => 'required|image:jpeg,png,jpg,gif,svg|max:2048'
         ]);
 
         if ($barang != NULL && $validator->fails()) {
             return response()->json(['status' => 400, 'errors' => $validator->errors()], 400);
         } else if ($barang != NULL) {
-            $barang->update($request->all());
+            if ($barang->gambar_name) {
+                Storage::delete($barang->gambar_name);
+            }
+            $gambar = $request->file('gambar_name')->store('gambar');
+            $barang->update([
+                'id_kategori' => $request->id_kategori,
+                'nama_barang' => $request->nama_barang,
+                'berat' => $request->berat,
+                'stok' => $request->stok,
+                'harga' => $request->harga,
+                'deskripsi' => $request->deskripsi,
+                'gambar_name' => $gambar,
+            ]);
             return response()->json(['status' => 200, 'message' => 'Barang berhasil diperbarui', 'data' => $barang], 404);
         } else {
             return response()->json(['status' => 404, 'message' => 'Barang tidak ditemukan'], 404);
         }
     }
+
+
 
     /**
      * Remove the specified resource from storage.
@@ -145,6 +159,7 @@ class BarangController extends Controller
 
         try {
             $barang->delete();
+            Storage::delete($barang->gambar_name);
             return response()->json(['status' => 200, 'message' => 'Barang berhasil dihapus'], 200);
         } catch (\Throwable $th) {
             return response()->json(['status' => 500, 'message' => 'Barang gagal dihapus'], 500);

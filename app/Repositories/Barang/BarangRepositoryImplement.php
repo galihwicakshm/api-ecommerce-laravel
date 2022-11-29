@@ -57,4 +57,9 @@ class BarangRepositoryImplement extends Eloquent implements BarangRepository
 
         return $barang;
     }
+
+    public function updates(Request $request, $id)
+    {
+        $barang = $this->barangRepository->findBarang($id);
+    }
 }

@@ -15,4 +15,6 @@ interface BarangRepository extends Repository
     public function findBarang($id);
 
     public function store(Request $request);
+
+    public function updates(Request $request, $id);
 }
